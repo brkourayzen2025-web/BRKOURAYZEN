@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="fr">
+    <title>Fiche de Réception du Matériel - KOURAYZEN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 4px solid #1a5490;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #1a5490;
+            font-size: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #1a5490 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(26, 84, 144, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1a5490;
+            box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .table-check {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-check th {
+            background: linear-gradient(135deg, #1a5490 0%, #2980b9 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .table-check td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        .table-check tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-check tr:hover {
+            background: #e3f2fd;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .radio-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .level-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .signature-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .signature-box {
+            border: 3px solid #1a5490;
+            border-radius: 10px;
+            padding: 15px;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signature-box h3 {
+            color: #1a5490;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 700;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signature-canvas {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed #1a5490;
+            background: white;
+            cursor: crosshair;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .signature-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-clear {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #c82333;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #333;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .decision-box {
+            border: 3px solid #2c3e50;
+            padding: 20px;
+            border-radius: 10px;
+            background: linear-gradient(to right, #fff9e6 0%, #fffef2 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .decision-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .decision-item input[type="radio"] {
+            width: 22px;
+            height: 22px;
+        }
+
+        .decision-item label {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            .btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .signature-section {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        input[type="text"]:invalid {
+            border-color: #dc3545;
+        }
+
+        input[type="text"]:valid {
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContent">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>🚧 FICHE DE RÉCEPTION DU MATÉRIEL DE LOCATION</h1>
+            <h2>BARRAGE KOURAYZEN</h2>
+            <p>Convention N°01/2024/KOURAYZEN – Programme National d'Approvisionnement en Eau Potable et Irrigation (PNAEPI) 2020‑2027<br>
+            Ministère de l'Équipement et de l'Eau - Direction des Aménagements Hydrauliques - Province de Tiznit</p>
+        </div>
+
+        <!-- Section 1: Informations Générales -->
+        <div class="section">
+            <div class="section-title">📋 1. INFORMATIONS GÉNÉRALES</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>N° de convention</label>
+                    <input type="text" id="numConvention" value="01/2024/KOURAYZEN" readonly style="background: #f0f0f0; font-weight: 600;">
+                </div>
+                <div class="form-group">
+                    <label>Date de réception</label>
+                    <input type="date" id="dateReception">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Heure d'arrivée</label>
+                    <input type="time" id="heureArrivee">
+                </div>
+                <div class="form-group">
+                    <label>Bon de commande N°</label>
+                    <input type="text" id="bonCommande" spellcheck="true">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Lieu d'utilisation</label>
+                    <input type="text" id="lieuUtilisation" spellcheck="true" placeholder="Ex: Chantier Barrage KOURAYZEN">
+                </div>
+                <div class="form-group">
+                    <label>Superviseur SGC</label>
+                    <input type="text" id="superviseurSGC" spellcheck="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>N° de bon de mouvement</label>
+                <input type="text" id="bonMouvement" spellcheck="true">
+            </div>
+        </div>
+
+        <!-- Section 2: Identification du Matériel -->
+        <div class="section">
+            <div class="section-title">🚜 2. IDENTIFICATION DU MATÉRIEL</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Type / Engin <span class="info-badge">Selon Convention</span></label>
+                    <select id="typeEngin">
+                        <option value="">-- Sélectionner le type d'engin --</option>
+                        <option value="Bulldozer P 251-300 CV">Bulldozer P 251-300 CV</option>
+                        <option value="Chargeuse P> 150 CV">Chargeuse P> 150 CV</option>
+                        <option value="Chargeuse P 101-150 CV">Chargeuse P 101-150 CV</option>
+                        <option value="Compacteur P>200 CV">Compacteur P>200 CV</option>
+                        <option value="Niveleuse P 121-140 CV">Niveleuse P 121-140 CV</option>
+                        <option value="Pelle hydraulique P< 170 CV">Pelle hydraulique P< 170 CV</option>
+                        <option value="Pelle hydraulique P> 221 CV">Pelle hydraulique P> 221 CV</option>
+                        <option value="Camion P<300 CV">Camion P<300 CV</option>
+                        <option value="Camion P > 401 CV">Camion P > 401 CV</option>
+                        <option value="Porte-engin P>401 CV">Porte-engin P>401 CV</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Puissance / Capacité</label>
+                    <input type="text" id="puissance" spellcheck="true" placeholder="Ex: 300 CV">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Marque / Modèle</label>
+                    <input type="text" id="marqueModele" spellcheck="true" placeholder="Ex: Caterpillar D8">
+                </div>
+                <div class="form-group">
+                    <label>N° série / Immatriculation</label>
+                    <input type="text" id="numSerie" spellcheck="false" placeholder="Ex: ABC-123-45">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Année fabrication</label>
+                    <input type="number" id="anneeFabrication" min="1980" max="2025" placeholder="Ex: 2020">
+                </div>
+                <div class="form-group">
+                    <label>Heures / Kilométrage</label>
+                    <input type="text" id="heuresKm" placeholder="Ex: 5000 heures">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: État Général du Matériel -->
+        <div class="section">
+            <div class="section-title">🔧 3. ÉTAT GÉNÉRAL DU MATÉRIEL</div>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #666; font-style: italic;">Cocher la case appropriée pour chaque élément</p>
+            <table class="table-check">
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">Élément</th>
+                        <th style="text-align: center; width: 10%;">Bon</th>
+                        <th style="text-align: center; width: 10%;">Moyen</th>
+                        <th style="text-align: center; width: 10%;">Médiocre</th>
+                        <th style="width: 35%;">Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Carrosserie / Cabine</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_carrosserie" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_carrosserie" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_carrosserie" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pare-brise avant / latéraux / arrière</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_parebrise" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_parebrise" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_parebrise" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Moteur</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_moteur" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_moteur" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_moteur" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Système hydraulique</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_hydraulique" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_hydraulique" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_hydraulique" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transmission</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_transmission" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_transmission" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_transmission" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Freins</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_freins" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_freins" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_freins" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Direction</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_direction" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_direction" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_direction" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pneumatiques / Chenilles</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_pneumatiques" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_pneumatiques" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_pneumatiques" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Système de suspension</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_suspension" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_suspension" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_suspension" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Système de levage de benne</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_levage" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_levage" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_levage" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Circuit électrique et feux de signalisation</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_electrique" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_electrique" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_electrique" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Système de refroidissement moteur</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_refroidissement" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_refroidissement" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_refroidissement" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Brise roche</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_brise_roche" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_brise_roche" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_brise_roche" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Godet</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_godet" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_godet" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="etat_godet" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 4: Accessoires et Équipements -->
+        <div class="section">
+            <div class="section-title">🛠️ 4. ACCESSOIRES ET ÉQUIPEMENTS OPÉRATIONNELS</div>
+            <table class="table-check">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Accessoire / Équipement</th>
+                        <th style="text-align: center; width: 10%;">Présent</th>
+                        <th style="text-align: center; width: 10%;">Absent</th>
+                        <th style="text-align: center; width: 10%;">Bon</th>
+                        <th style="text-align: center; width: 10%;">Moyen</th>
+                        <th style="text-align: center; width: 10%;">Médiocre</th>
+                        <th style="width: 20%;">Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Roue de secours</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="roue_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="roue_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="roue_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="roue_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="roue_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cric et manivelle</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="cric_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="cric_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="cric_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="cric_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="cric_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clé en croix</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="cle_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="cle_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="cle_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="cle_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="cle_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Extincteur</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="extincteur_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="extincteur_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="extincteur_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="extincteur_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="extincteur_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trousse de premiers secours</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="trousse_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="trousse_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="trousse_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="trousse_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="trousse_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Triangle de signalisation</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="triangle_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="triangle_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="triangle_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="triangle_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="triangle_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gilet fluorescent</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="gilet_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="gilet_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="gilet_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="gilet_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="gilet_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feux de recul / Gyrophare</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="feux_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="feux_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="feux_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="feux_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="feux_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Coffret à outils de bord</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="coffret_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="coffret_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="coffret_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="coffret_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="coffret_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tapis / Cales de sécurité</strong></td>
+                        <td style="text-align: center;"><input type="radio" name="tapis_presence" value="present"></td>
+                        <td style="text-align: center;"><input type="radio" name="tapis_presence" value="absent"></td>
+                        <td style="text-align: center;"><input type="radio" name="tapis_etat" value="bon"></td>
+                        <td style="text-align: center;"><input type="radio" name="tapis_etat" value="moyen"></td>
+                        <td style="text-align: center;"><input type="radio" name="tapis_etat" value="mediocre"></td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 5: Niveaux et Fuites -->
+        <div class="section">
+            <div class="section-title">💧 5. NIVEAUX (GRADUATION 5%) ET FUITES APPARENTES</div>
+            <table class="table-check">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Fluide</th>
+                        <th style="width: 35%;">Niveau</th>
+                        <th style="width: 15%;">Fuite observée</th>
+                        <th style="width: 25%;">Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Carburant</strong></td>
+                        <td>
+                            <select class="level-select" style="width: 100%;">
+                                <option value="">-- Niveau --</option>
+                                <option value="0">0% (Vide)</option>
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100% (Plein)</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="radio" name="fuite_carburant" value="oui"> Oui &nbsp;
+                            <input type="radio" name="fuite_carburant" value="non" checked> Non
+                        </td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Huile moteur</strong></td>
+                        <td>
+                            <select class="level-select" style="width: 100%;">
+                                <option value="">-- Niveau --</option>
+                                <option value="0">0% (Vide)</option>
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100% (Plein)</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="radio" name="fuite_huile_moteur" value="oui"> Oui &nbsp;
+                            <input type="radio" name="fuite_huile_moteur" value="non" checked> Non
+                        </td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Huile hydraulique</strong></td>
+                        <td>
+                            <select class="level-select" style="width: 100%;">
+                                <option value="">-- Niveau --</option>
+                                <option value="0">0% (Vide)</option>
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100% (Plein)</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="radio" name="fuite_huile_hydraulique" value="oui"> Oui &nbsp;
+                            <input type="radio" name="fuite_huile_hydraulique" value="non" checked> Non
+                        </td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Liquide de refroidissement</strong></td>
+                        <td>
+                            <select class="level-select" style="width: 100%;">
+                                <option value="">-- Niveau --</option>
+                                <option value="0">0% (Vide)</option>
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100% (Plein)</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="radio" name="fuite_refroidissement" value="oui"> Oui &nbsp;
+                            <input type="radio" name="fuite_refroidissement" value="non" checked> Non
+                        </td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Liquide de frein</strong></td>
+                        <td>
+                            <select class="level-select" style="width: 100%;">
+                                <option value="">-- Niveau --</option>
+                                <option value="0">0% (Vide)</option>
+                                <option value="25">25%</option>
+                                <option value="50">50%</option>
+                                <option value="75">75%</option>
+                                <option value="100">100% (Plein)</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="radio" name="fuite_frein" value="oui"> Oui &nbsp;
+                            <input type="radio" name="fuite_frein" value="non" checked> Non
+                        </td>
+                        <td><input type="text" spellcheck="true" style="border: none; background: transparent; width: 100%;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 6: Synthèse de Réception -->
+        <div class="section">
+            <div class="section-title">✅ 6. SYNTHÈSE DE RÉCEPTION</div>
+            <div class="decision-box">
+                <div class="decision-item">
+                    <input type="radio" name="decision" id="accepte" value="accepte">
+                    <label for="accepte">☑ Matériel accepté en bon état pour mise en service</label>
+                </div>
+                <div class="decision-item">
+                    <input type="radio" name="decision" id="reserves" value="reserves">
+                    <label for="reserves">⚠ Matériel accepté avec réserves (à corriger avant usage)</label>
+                </div>
+                <div class="decision-item">
+                    <input type="radio" name="decision" id="refuse" value="refuse">
+                    <label for="refuse">❌ Matériel refusé – Non conforme ou dangereux</label>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>Date de mise en service prévue</label>
+                    <input type="date" id="dateMiseService">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Signatures -->
+        <div class="section">
+            <div class="section-title">✍️ 7. SIGNATURES CONJOINTES</div>
+            
+            <div class="signature-section">
+                <!-- Signature Superviseur SGC -->
+                <div class="signature-box">
+                    <h3>SUPERVISEUR D'ENGINS<br>(SGC)</h3>
+                    <div class="form-group">
+                        <label>Nom et Prénom</label>
+                        <input type="text" id="nomSuperviseur" spellcheck="true">
+                    </div>
+                    <label>Signature et cachet</label>
+                    <canvas id="signatureSuperviseur" class="signature-canvas"></canvas>
+                    <div class="signature-buttons">
+                        <button class="btn btn-clear" onclick="clearSignature('signatureSuperviseur')">🗑️ Effacer</button>
+                    </div>
+                </div>
+
+                <!-- Signature Chef d'Aménagement -->
+                <div class="signature-box">
+                    <h3>CHEF D'AMÉNAGEMENT<br>(DAH)</h3>
+                    <div class="form-group">
+                        <label>Nom et Prénom</label>
+                        <input type="text" id="nomChef" value="HADAOUI RADOUANE" spellcheck="true" style="font-weight: 600; color: #1a5490;">
+                    </div>
+                    <label>Signature et cachet</label>
+                    <canvas id="signatureChef" class="signature-canvas"></canvas>
+                    <div class="signature-buttons">
+                        <button class="btn btn-clear" onclick="clearSignature('signatureChef')">🗑️ Effacer</button>
+                    </div>
+                </div>
+
+                <!-- Signature Pointeur -->
+                <div class="signature-box">
+                    <h3>POINTEUR DE CHANTIER</h3>
+                    <div class="form-group">
+                        <label>Nom et Prénom</label>
+                        <input type="text" id="nomPointeur" spellcheck="true">
+                    </div>
+                    <label>Signature et cachet</label>
+                    <canvas id="signaturePointeur" class="signature-canvas"></canvas>
+                    <div class="signature-buttons">
+                        <button class="btn btn-clear" onclick="clearSignature('signaturePointeur')">🗑️ Effacer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="action-buttons">
+            <button class="btn btn-save" onclick="saveForm()">
+                💾 ENREGISTRER
+            </button>
+            <button class="btn btn-send" onclick="sendForm()">
+                📧 ENVOYER
+            </button>
+            <button class="btn btn-generate" onclick="generatePDF()">
+                📄 GÉNÉRER PDF
+            </button>
+        </div>
+        
+        <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666; font-style: italic;">
+            <em>Fiche établie en double exemplaire – Chef d'Aménagement (DAH) / SGC – SEGMA – Barrage Kourayzen – Province de Tiznit</em>
+        </p>
+    </div>
+
+    <script>
+        // Configuration des canvas de signature
+        let canvases = {};
+
+        function setupSignatureCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            
+            canvases[canvasId] = { canvas, ctx, isDrawing: false };
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            function startDrawing(e) {
+                canvases[canvasId].isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            }
+            
+            function draw(e) {
+                if (!canvases[canvasId].isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            }
+            
+            function stopDrawing() {
+                canvases[canvasId].isDrawing = false;
+            }
+            
+            function handleTouch(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                                  e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }
+        }
+
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        window.addEventListener('load', function() {
+            setupSignatureCanvas('signatureSuperviseur');
+            setupSignatureCanvas('signatureChef');
+            setupSignatureCanvas('signaturePointeur');
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateReception').value = today;
+            document.getElementById('dateMiseService').value = today;
+            
+            // Charger sauvegarde si existe
+            const saved = localStorage.getItem('fiche_reception_kourayzen');
+            if (saved) {
+                const userChoice = confirm('📂 Une fiche précédente a été trouvée.\n\nVoulez-vous la charger ?');
+                if (userChoice) {
+                    loadSavedForm();
+                }
+            }
+        });
+
+        async function generatePDF() {
+            const canvasSuperviseur = document.getElementById('signatureSuperviseur');
+            const canvasChef = document.getElementById('signatureChef');
+            const canvasPointeur = document.getElementById('signaturePointeur');
+            
+            if (!isCanvasSigned(canvasSuperviseur) || !isCanvasSigned(canvasChef) || !isCanvasSigned(canvasPointeur)) {
+                alert('⚠️ Veuillez signer les trois signatures avant de générer le PDF !');
+                return;
+            }
+
+            // Message de chargement
+            const loading = document.createElement('div');
+            loading.innerHTML = '<div style="font-size:24px;margin-bottom:10px;">⏳</div>Génération du PDF en cours...<br><small>Veuillez patienter quelques secondes</small>';
+            loading.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1a5490,#2980b9);color:white;padding:40px;border-radius:15px;z-index:10000;font-size:18px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3);';
+            document.body.appendChild(loading);
+
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.style.display = 'none');
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Optimisation pour générer exactement 3 pages PDF
+                const canvas = await html2canvas(document.getElementById('formContent'), {
+                    scale: 2.0,  // Augmenté pour meilleure qualité
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: 1000
+                });
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                
+                // Calcul pour forcer 3 pages exactement
+                const totalPages = 3;
+                const sectionHeight = imgHeight / totalPages;
+                
+                // Page 1
+                const canvas1 = document.createElement('canvas');
+                canvas1.width = canvas.width;
+                canvas1.height = sectionHeight;
+                const ctx1 = canvas1.getContext('2d');
+                ctx1.drawImage(canvas, 0, 0, canvas.width, sectionHeight, 0, 0, canvas.width, sectionHeight);
+                const imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
+                const ratio1 = pdfWidth / imgWidth;
+                const scaledHeight1 = sectionHeight * ratio1;
+                pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, scaledHeight1);
+                
+                // Page 2
+                pdf.addPage();
+                const canvas2 = document.createElement('canvas');
+                canvas2.width = canvas.width;
+                canvas2.height = sectionHeight;
+                const ctx2 = canvas2.getContext('2d');
+                ctx2.drawImage(canvas, 0, sectionHeight, canvas.width, sectionHeight, 0, 0, canvas.width, sectionHeight);
+                const imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
+                pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, scaledHeight1);
+                
+                // Page 3
+                pdf.addPage();
+                const canvas3 = document.createElement('canvas');
+                canvas3.width = canvas.width;
+                canvas3.height = sectionHeight;
+                const ctx3 = canvas3.getContext('2d');
+                ctx3.drawImage(canvas, 0, sectionHeight * 2, canvas.width, sectionHeight, 0, 0, canvas.width, sectionHeight);
+                const imgData3 = canvas3.toDataURL('image/jpeg', 0.95);
+                pdf.addImage(imgData3, 'JPEG', 0, 0, pdfWidth, scaledHeight1);
+                
+                const dateStr = new Date().toISOString().split('T')[0];
+                const typeEngin = document.getElementById('typeEngin').value.split(' ')[0] || 'ENGIN';
+                const immat = (document.getElementById('numSerie').value || 'MATERIEL').replace(/[^a-zA-Z0-9]/g, '_');
+                const filename = `Fiche_Reception_${typeEngin}_${immat}_${dateStr}.pdf`;
+                
+                pdf.save(filename);
+                
+                loading.remove();
+                alert('✅ PDF généré avec succès en 3 pages !\n\n📄 Fichier : ' + filename);
+                
+            } catch (error) {
+                loading.remove();
+                console.error('Erreur PDF:', error);
+                alert('❌ Erreur lors de la génération du PDF.\n\nDétails: ' + error.message + '\n\nVérifiez que tous les champs sont bien remplis.');
+            } finally {
+                buttons.forEach(btn => btn.style.display = '');
+            }
+        }
+
+        function saveForm() {
+            try {
+                const formData = {
+                    dateReception: document.getElementById('dateReception').value,
+                    heureArrivee: document.getElementById('heureArrivee').value,
+                    bonCommande: document.getElementById('bonCommande').value,
+                    lieuUtilisation: document.getElementById('lieuUtilisation').value,
+                    superviseurSGC: document.getElementById('superviseurSGC').value,
+                    bonMouvement: document.getElementById('bonMouvement').value,
+                    typeEngin: document.getElementById('typeEngin').value,
+                    puissance: document.getElementById('puissance').value,
+                    marqueModele: document.getElementById('marqueModele').value,
+                    numSerie: document.getElementById('numSerie').value,
+                    anneeFabrication: document.getElementById('anneeFabrication').value,
+                    heuresKm: document.getElementById('heuresKm').value,
+                    nomSuperviseur: document.getElementById('nomSuperviseur').value,
+                    nomChef: document.getElementById('nomChef').value,
+                    nomPointeur: document.getElementById('nomPointeur').value,
+                    savedDate: new Date().toISOString()
+                };
+                
+                localStorage.setItem('fiche_reception_kourayzen', JSON.stringify(formData));
+                
+                let txt = '═══════════════════════════════════════════════════════════\n';
+                txt += '     FICHE DE RÉCEPTION DU MATÉRIEL - BARRAGE KOURAYZEN\n';
+                txt += '═══════════════════════════════════════════════════════════\n\n';
+                txt += 'Convention N°01/2024/KOURAYZEN\n';
+                txt += 'Date de sauvegarde : ' + new Date().toLocaleString('fr-FR') + '\n\n';
+                
+                txt += '--- INFORMATIONS GÉNÉRALES ---\n';
+                txt += '• Date de réception : ' + (formData.dateReception || 'Non renseigné') + '\n';
+                txt += '• Heure d\'arrivée : ' + (formData.heureArrivee || 'Non renseigné') + '\n';
+                txt += '• Lieu : ' + (formData.lieuUtilisation || 'Non renseigné') + '\n\n';
+                
+                txt += '--- IDENTIFICATION DU MATÉRIEL ---\n';
+                txt += '• Type/Engin : ' + (formData.typeEngin || 'Non renseigné') + '\n';
+                txt += '• Marque/Modèle : ' + (formData.marqueModele || 'Non renseigné') + '\n';
+                txt += '• Immatriculation : ' + (formData.numSerie || 'Non renseigné') + '\n\n';
+                
+                txt += '--- SIGNATAIRES ---\n';
+                txt += '• Superviseur SGC : ' + (formData.nomSuperviseur || 'Non renseigné') + '\n';
+                txt += '• Chef d\'Aménagement : ' + (formData.nomChef || 'Non renseigné') + '\n';
+                txt += '• Pointeur : ' + (formData.nomPointeur || 'Non renseigné') + '\n\n';
+                
+                txt += '═══════════════════════════════════════════════════════════\n';
+                txt += 'Province de Tiznit - PNAEPI 2020-2027\n';
+                txt += '═══════════════════════════════════════════════════════════\n';
+                
+                const blob = new Blob([txt], {type: 'text/plain;charset=utf-8'});
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const dateStr = new Date().toISOString().split('T')[0];
+                const typeEngin = formData.typeEngin.split(' ')[0] || 'ENGIN';
+                link.download = `Sauvegarde_${typeEngin}_${dateStr}.txt`;
+                link.click();
+                URL.revokeObjectURL(url);
+                
+                alert('✅ Formulaire enregistré avec succès !\n\n💾 Sauvegarde locale\n📁 Fichier texte téléchargé');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('❌ Erreur lors de la sauvegarde');
+            }
+        }
+
+        function loadSavedForm() {
+            const saved = localStorage.getItem('fiche_reception_kourayzen');
+            if (saved) {
+                const formData = JSON.parse(saved);
+                Object.keys(formData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element && formData[key]) {
+                        element.value = formData[key];
+                    }
+                });
+            }
+        }
+
+        function sendForm() {
+            const canvasSuperviseur = document.getElementById('signatureSuperviseur');
+            const canvasChef = document.getElementById('signatureChef');
+            const canvasPointeur = document.getElementById('signaturePointeur');
+            
+            if (!isCanvasSigned(canvasSuperviseur) || !isCanvasSigned(canvasChef) || !isCanvasSigned(canvasPointeur)) {
+                alert('⚠️ Veuillez signer les trois signatures avant d\'envoyer !');
+                return;
+            }
+            
+            const typeEngin = document.getElementById('typeEngin').value || 'N/A';
+            const immat = document.getElementById('numSerie').value || 'N/A';
+            const dateReception = document.getElementById('dateReception').value || 'N/A';
+            const nomChef = document.getElementById('nomChef').value;
+            
+            const emailBody = `Bonjour,
+
+Veuillez trouver ci-joint la fiche de réception du matériel de location pour le projet Barrage KOURAYZEN.
+
+📋 INFORMATIONS :
+• Type d'engin : ${typeEngin}
+• Immatriculation : ${immat}
+• Date de réception : ${dateReception}
+• Convention : 01/2024/KOURAYZEN
+
+Signé par :
+• Chef d'Aménagement (DAH) : ${nomChef}
+• Superviseur SGC
+• Pointeur de chantier
+
+⚠️ N'oubliez pas de générer et joindre le PDF !
+
+Cordialement,
+${nomChef}
+Chef d'Aménagement - DAH
+Province de Tiznit`;
+
+            const emailSubject = `Fiche Réception - ${typeEngin} - ${immat}`;
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            const userChoice = confirm('📧 ENVOYER LA FICHE\n\n✅ OK pour ouvrir votre client email\n❌ Annuler pour copier les informations');
+            
+            if (userChoice) {
+                window.location.href = mailtoLink;
+            } else {
+                navigator.clipboard.writeText(emailBody).then(() => {
+                    alert('✅ Informations copiées !');
+                });
+            }
+        }
+
+        function isCanvasSigned(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i] < 255 || data[i+1] < 255 || data[i+2] < 255) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
